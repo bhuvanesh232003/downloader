@@ -1,9 +1,8 @@
 services:
   - type: web
     name: telegram-downloader-bot
-    env: python
-    buildCommand: ""
-    startCommand: "python bot.py"
+    env: docker
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: BOT_TOKEN
         value: 8263130399:AAEAXbk90nTGreBxMVToaPNS2sp4ZIi-gnY
