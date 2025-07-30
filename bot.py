@@ -88,7 +88,13 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
                 pass
 
     except Exception as e:
-        await status_message.edit_text(f"You're Vidoe is now ready, you will now got this wihin second! Come Again...Bhvv: {str(e)}")
+        error_message = str(e).lower()
+        if "instagram" in error_message and ("login required" in error_message or "cookies" in error_message or "rate-limit" in error_message):
+            await status_message.edit_text("This Instagram video is private, restricted, or requires login. Please try another public post.")
+        elif "requested content is not available" in error_message:
+            await status_message.edit_text("The video is unavailable or has been removed. Try a different link.")
+        else:
+            await status_message.edit_text(f"An error occurred while processing your video: {str(e)}")
 
 def main():
     os.makedirs("downloads", exist_ok=True)
