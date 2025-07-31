@@ -19,11 +19,10 @@ if not BOT_TOKEN:
 logging.basicConfig(format="%(asctime)s - %(levelname)s - %(message)s", level=logging.INFO)
 
 # Constants
-MAX_FILE_SIZE = 49 * 1024 * 1024  # 49 MB for Telegram limit
+MAX_FILE_SIZE = 49 * 1024 * 1024  # Telegram file limit
 COOKIE_FILE = "cookies.txt"
 DOWNLOAD_DIR = "downloads"
 
-# Copyright message
 COPYRIGHT_NOTICE = (
     "*Copyright Disclaimer*\n\n"
     "This bot is for educational purposes only.\n"
@@ -31,14 +30,13 @@ COPYRIGHT_NOTICE = (
     "Please respect copyright laws and the terms of service of content providers."
 )
 
-# Download progress hook
 def download_hook(msg):
     if msg.get('status') == 'downloading':
         percent = msg.get('_percent_str', '').strip()
         if percent:
             print(f"Download Progress: {percent}")
 
-# Download function
+# === Main download function ===
 async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     url = update.message.text.strip()
     if not url.startswith("http"):
@@ -50,23 +48,21 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-ydl_opts = {
-    'format': 'bestvideo[height<=360]+bestaudio/best[height<=360]/best',
-    'noplaylist': True,
-    'progress_hooks': [download_hook],
-    'outtmpl': f'{DOWNLOAD_DIR}/%(title).50s.%(ext)s',
-    'quiet': True,
-    'no_warnings': True,
-    'ffmpeg_location': '/usr/bin/ffmpeg',
-    'merge_output_format': 'mp4',  # Needed when combining video+audio
-    'http_headers': {
-        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        'Accept-Language': 'en-US,en;q=0.9',
+    ydl_opts = {
+        'format': 'bestvideo[height<=360]+bestaudio/best[height<=360]/best',
+        'noplaylist': True,
+        'progress_hooks': [download_hook],
+        'outtmpl': f'{DOWNLOAD_DIR}/%(title).50s.%(ext)s',
+        'quiet': True,
+        'no_warnings': True,
+        'merge_output_format': 'mp4',
+        'ffmpeg_location': '/usr/bin/ffmpeg',
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+            'Accept-Language': 'en-US,en;q=0.9',
+        }
     }
-}
 
-
-    # Add cookies if file exists
     if os.path.exists(COOKIE_FILE):
         ydl_opts['cookiefile'] = COOKIE_FILE
 
@@ -82,7 +78,6 @@ ydl_opts = {
                 return
 
             await status_msg.edit_text("⬇️ Downloading...")
-
             ydl.download([url])
 
             if not os.path.exists(filename):
@@ -90,7 +85,6 @@ ydl_opts = {
                 return
 
             await status_msg.edit_text("📤 Uploading...")
-
             with open(filename, 'rb') as f:
                 await update.message.reply_video(f, caption=title)
 
@@ -108,7 +102,7 @@ ydl_opts = {
         else:
             await status_msg.edit_text(f"❌ Error: {error_message}")
 
-# Bot startup
+# === Main startup ===
 def main():
     app = ApplicationBuilder().token(BOT_TOKEN).build()
     app.add_handler(MessageHandler(filters.TEXT & ~filters.COMMAND, download_video))
