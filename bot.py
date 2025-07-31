@@ -57,6 +57,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'outtmpl': f'{DOWNLOAD_DIR}/%(title).50s.%(ext)s',
         'quiet': True,
         'no_warnings': True,
+        'ffmpeg_location': '/usr/bin/ffmpeg',
         'cookiefile': 'cookies.txt'
     }
 
