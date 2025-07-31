@@ -58,7 +58,9 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'quiet': True,
         'no_warnings': True,
         'ffmpeg_location': '/usr/bin/ffmpeg',
-        'cookiefile': 'cookies.txt'
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        }
     }
 
     # Add cookies if file exists
