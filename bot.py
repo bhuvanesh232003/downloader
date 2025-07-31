@@ -50,18 +50,21 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
     os.makedirs(DOWNLOAD_DIR, exist_ok=True)
 
-    ydl_opts = {
-        'format': 'bestvideo[height<=360]+bestaudio/best[height<=360]/best',
-        'noplaylist': True,
-        'progress_hooks': [download_hook],
-        'outtmpl': f'{DOWNLOAD_DIR}/%(title).50s.%(ext)s',
-        'quiet': True,
-        'no_warnings': True,
-        'ffmpeg_location': '/usr/bin/ffmpeg',
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-        }
+ydl_opts = {
+    'format': 'bestvideo[height<=360]+bestaudio/best[height<=360]/best',
+    'noplaylist': True,
+    'progress_hooks': [download_hook],
+    'outtmpl': f'{DOWNLOAD_DIR}/%(title).50s.%(ext)s',
+    'quiet': True,
+    'no_warnings': True,
+    'ffmpeg_location': '/usr/bin/ffmpeg',
+    'merge_output_format': 'mp4',  # Needed when combining video+audio
+    'http_headers': {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+        'Accept-Language': 'en-US,en;q=0.9',
     }
+}
+
 
     # Add cookies if file exists
     if os.path.exists(COOKIE_FILE):
