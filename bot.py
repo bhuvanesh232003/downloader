@@ -63,9 +63,6 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         }
     }
 
-    if os.path.exists(COOKIE_FILE):
-        ydl_opts['cookiefile'] = COOKIE_FILE
-
     try:
         with YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
