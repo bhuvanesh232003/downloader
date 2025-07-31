@@ -54,6 +54,7 @@ async def download_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
         'outtmpl': 'downloads/%(title).50s.%(ext)s',
         'quiet': True,
         'no_warnings': True,
+        'cookiefile': 'cookies.txt', 
         # Cookies removed intentionally
     }
 
